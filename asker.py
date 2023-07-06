@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-from broker import send_to_base, open_DB
+from broker import send_to_base, take_row
 from config import NUMBER_BUTTONS
 
 
@@ -31,7 +31,7 @@ def ask_about():
 			time_by_trash = test_for_adequacy(values[0])
 			break
 		elif event=="Check DB":
-			open_DB()
+			open_DB(take_row())
 		elif event in [str(i) for i in range(NUMBER_BUTTONS)]:
 			time_by_trash = test_for_adequacy(event)
 			break
@@ -53,5 +53,19 @@ def test_for_adequacy(number_of_waste) -> float:
 	if number_of_waste > 24.0 or number_of_waste < 0:
 		raise("Written number is not right! ERROR n2")
 	return number_of_waste
+
+def open_DB(row_of_dots):
+	stg = [sg.Table(take_row(),col_widths=500)]
+	layout = [
+	[sg.Frame('',[stg],s=(500,300))]
+	]
+
+	# Create the window
+	window = sg.Window('Life Checker', layout)
+
+	# Display window
+	event, values = window.read()
+
+	window.close() 
 
 
