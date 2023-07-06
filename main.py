@@ -1,10 +1,8 @@
-from asker import ask_about as fake_aa
+from asker import ask_about 
 
 
 def _main():
-	# ask_about()
-	fake_aa()
-
+	ask_about()
 
 if __name__ == "__main__":
 	_main()
