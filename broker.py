@@ -52,3 +52,20 @@ def make_db():
 	finally:
 		cur.close()
 		conn.close()
+
+def drop_table():
+	conn = psycopg2.connect(host="localhost", port="5432", database="timekeeper",
+		user="postgres", password="b7o5k3e1r9")
+	cur = conn.cursor()
+	try:
+		cur.execute("""
+			DROP TABLE times;
+			""")
+
+		conn.commit()
+	except (Exception, Error) as error:
+		# print ("Trouble with the database work", error, sep="\n")
+		pass
+	finally:
+		cur.close()
+		conn.close()
