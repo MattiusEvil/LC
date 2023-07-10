@@ -41,7 +41,9 @@ def make_db():
 	cur = conn.cursor()
 	try:
 		cur.execute("""
-			CREATE TABLE times (date_of_check DATE, 
+			CREATE TABLE times (
+				index BIGSERIAL PRIMARY KEY,
+				date_of_check DATE, 
 				time_of_hours REAL);
 			""")
 
