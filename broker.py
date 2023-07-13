@@ -6,13 +6,15 @@ def send_to_base(tbt):
 	conn = psycopg2.connect(host="localhost", port="5432", database="timekeeper",
 		user="postgres", password="b7o5k3e1r9")
 	cur = conn.cursor()
+	print(tbt)
 	make_db()
+
 
 	cur.execute("""
 	INSERT INTO times (date_of_check, time_of_hours)
-	VALUES (CURRENT_DATE, %s);
+	VALUES (CURRENT_DATE, %(bubu)s);
 	""",
-	(tbt,))
+	({"bubu":tbt}))
 
 	conn.commit()
 
@@ -24,12 +26,10 @@ def take_row():
 		user="postgres", password="b7o5k3e1r9")
 	cur = conn.cursor()
 	make_db()
-
 	cur.execute("""
-		SELECT to_char(date_of_check,'YYYY/MM/DD'), to_char(time_of_hours,'99') FROM times
+		SELECT date_of_check, time_of_hours FROM times
 		""")
 	row_of_dots=cur.fetchall()
-
 	cur.close()
 	conn.close()
 	return row_of_dots
@@ -63,6 +63,26 @@ def drop_table():
 		cur.execute("""
 			DROP TABLE times;
 			""")
+
+		conn.commit()
+	except (Exception, Error) as error:
+		# print ("Trouble with the database work", error, sep="\n")
+		pass
+	finally:
+		cur.close()
+		conn.close()
+
+def drop_row(s_row):
+	conn = psycopg2.connect(host="localhost", port="5432", database="timekeeper",
+		user="postgres", password="b7o5k3e1r9")
+	cur = conn.cursor()
+	try:
+		cur.execute("""
+			DELETE FROM times
+			WHERE date_of_check=%(date)s and time_of_hours>%(time1)s and time_of_hours<%(time2)s
+			""",
+			({"date":s_row[0],"time1":s_row[1]-0.001,"time2":s_row[1]+0.001})
+			)
 
 		conn.commit()
 	except (Exception, Error) as error:
