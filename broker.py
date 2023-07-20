@@ -2,19 +2,18 @@ import psycopg2
 from psycopg2 import Error
 
 
-def send_to_base(tbt):
+def send_to_base(tbt, chosed_date):
 	conn = psycopg2.connect(host="localhost", port="5432", database="timekeeper",
 		user="postgres", password="b7o5k3e1r9")
 	cur = conn.cursor()
-	print(tbt)
 	make_db()
 
 
 	cur.execute("""
 	INSERT INTO times (date_of_check, time_of_hours)
-	VALUES (CURRENT_DATE, %(bubu)s);
+	VALUES (%(bibiDate)s, %(bubuTime)s);
 	""",
-	({"bubu":tbt}))
+	({"bubuTime":tbt, "bibiDate":chosed_date}))
 
 	conn.commit()
 
@@ -91,3 +90,19 @@ def drop_row(s_row):
 	finally:
 		cur.close()
 		conn.close()
+
+def take_one_row(interval_from_now: int):
+	conn = psycopg2.connect(host="localhost", port="5432", database="timekeeper",
+		user="postgres", password="b7o5k3e1r9")
+	cur = conn.cursor()
+	make_db()
+	cur.execute("""
+		SELECT date_of_check FROM times
+		WHERE date_of_check=CURRENT_DATE - interval'%(days)s day'
+		""",
+		({"days":interval_from_now})
+		)
+	row_of_dots=cur.fetchone()
+	cur.close()
+	conn.close()
+	return row_of_dots

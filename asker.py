@@ -1,55 +1,57 @@
-import PySimpleGUI as sg
-from broker import send_to_base, take_row, drop_table, drop_row
+from broker import send_to_base, take_row, drop_table, drop_row, take_one_row
 from config import BUT_NUMBER_SSS, HEADINGS
+import datetime as dt
+import PySimpleGUI as sg
 
 
-def test_ask_about():
-	sg.theme('SystemDefaultForReal')
-	time_by_trash = None
+
+# def test_ask_about():
+# 	sg.theme('SystemDefaultForReal')
+# 	time_by_trash = None
 
 
-	# Window's content
-	layout = [
-	[sg.Text("What time do you waste today, my friend?")],
-	[sg.InputText(size=5),sg.Text("(00:00) hours:minutes")],
-	[sg.Button("Send")],
-	[*[sg.Button(i) for i in BUT_NUMBER_SSS],sg.Button("Check DB")]
-	]
+# 	# Window's content
+# 	layout = [
+# 	[sg.Text("What time do you waste today, my friend?")],
+# 	[sg.InputText(size=5),sg.Text("(00:00) hours:minutes")],
+# 	[sg.Button("Send")],
+# 	[*[sg.Button(i) for i in BUT_NUMBER_SSS],sg.Button("Check DB")]
+# 	]
 
-	# Create the window
-	window = sg.Window('Life Checker', layout)
+# 	# Create the window
+# 	window = sg.Window('Life Checker', layout)
 
-	# Display window
+# 	# Display window
 	
 
-	while True:
-		event, values = window.read()
-		if event==sg.WINDOW_CLOSED :
-			print("Programm was closed.")
-			return 0    									#В таблицу ничего не уходит
-		elif event=="Send":
-			time_by_trash = test_for_adequacy(values[0])
-			send_to_base(time_by_trash)
-			# break
-		elif event=="Check DB":
-			open_DB()
-		elif event in [i for i in BUT_NUMBER_SSS]:
-			time_by_trash = test_for_adequacy(event)
-			send_to_base(time_by_trash)
-			# break
+# 	while True:
+# 		event, values = window.read()
+# 		if event==sg.WINDOW_CLOSED :
+# 			print("Programm was closed.")
+# 			return 0    									#В таблицу ничего не уходит
+# 		elif event=="Send":
+# 			time_by_trash = test_for_adequacy(values[0])
+# 			send_to_base(time_by_trash)
+# 			# break
+# 		elif event=="Check DB":
+# 			open_DB()
+# 		elif event in [i for i in BUT_NUMBER_SSS]:
+# 			time_by_trash = test_for_adequacy(event)
+# 			send_to_base(time_by_trash)
+# 			# break
 
-	# send_to_base(time_by_trash)
+# 	# send_to_base(time_by_trash)
 
-	window.close() 
+# 	window.close() 
 
-def ask_about():
+def ask_about(chosed_date=dt.date.today()):
 	sg.theme('SystemDefaultForReal')
 	time_by_trash = None
 
 
 	# Window's content
 	layout = [
-	[sg.Text("What time do you waste today, my friend?")],
+	[sg.Text(f"What time do you waste in {chosed_date}, my friend?")],
 	[sg.InputText(size=5),sg.Text("(00:00) hours:minutes")],
 	[sg.Button("Send")],
 	[*[sg.Button(i) for i in BUT_NUMBER_SSS],sg.Button("Check DB")]
@@ -75,7 +77,7 @@ def ask_about():
 			time_by_trash = test_for_adequacy(event)
 			break
 
-	send_to_base(time_by_trash)
+	send_to_base(time_by_trash, chosed_date)
 
 	window.close() 
 
@@ -130,7 +132,14 @@ def open_DB():
 
 	window.close() 
 
-
+def is_acheck(num_of_cd) -> list:
+	# lsit of dates
+	lof = []
+	for i in range(1,num_of_cd):
+		temp_date = take_one_row(i)
+		if temp_date is None:  lof.append(None)
+		else: lof.append(*take_one_row(i))
+	return lof
 
 def test_for_adequacy(number_of_waste) -> float:
 	if number_of_waste=="": return 0
