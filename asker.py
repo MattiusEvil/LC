@@ -45,12 +45,13 @@ import PySimpleGUI as sg
 # 	window.close() 
 
 def ask_about(chosed_date=dt.date.today()):
-	sg.theme('SystemDefaultForReal')
+	sg.theme('DarkBlack1')
 	time_by_trash = None
 
 
 	# Window's content
 	layout = [
+	[sg.Image(r'C:\Program Files (x86)\LifeCheck\skelet.png')],
 	[sg.Text(f"What time do you waste in {chosed_date}, my friend?")],
 	[sg.InputText(size=5),sg.Text("(00:00) hours:minutes")],
 	[sg.Button("Send")],
@@ -93,19 +94,23 @@ def open_DB():
 			row_colors=[tuple([i,"#00ff00"]) for i in l_i_g], 
 			headings=HEADINGS,
 			key='-CLICK-',
-			enable_events=True
+			enable_events=True,
+			row_height = 30,
+			border_width = 10,
+			expand_x = True,
+			expand_y = True
 			)]
 		
 		]
 		stg2 = [
-		[sg.Button("Reset table", s = (10, 5))],
-		[sg.Button("Delete line", disabled=True)]
+		[sg.Button("Reset table", s = (30, 3))],
+		[sg.Button("Delete line", disabled=True, s = (30, 3))]
 		]
 	else:
 		sg.popup("Table is empty")
 		return 0
 	layout = [
-	[sg.Frame('',stg1,s=(900,600)),sg.Frame('',stg2,s=(200,300))]
+	[sg.Frame('',stg1,s=(900,600)),sg.Frame('',stg2,s=(200,130))]
 	]
 
 	# Create the window
