@@ -53,7 +53,7 @@ def ask_about(chosed_date=dt.date.today()):
 	layout = [
 	[sg.Image(r'C:\Program Files (x86)\LifeCheck\skelet.png')],
 	[sg.Text(f"What time do you waste in {chosed_date}, my friend?")],
-	[sg.InputText(size=5),sg.Text("(00:00) hours:minutes")],
+	[sg.InputText(size=5, key='-text-'),sg.Text("(00:00) hours:minutes")],
 	[sg.Button("Send")],
 	[*[sg.Button(i) for i in BUT_NUMBER_SSS],sg.Button("Check DB")]
 	]
@@ -70,7 +70,7 @@ def ask_about(chosed_date=dt.date.today()):
 			print("Programm was closed.")
 			return 0    									#В таблицу ничего не уходит
 		elif event=="Send":
-			time_by_trash = test_for_adequacy(values[0])
+			time_by_trash = test_for_adequacy(values["-text-"])
 			break
 		elif event=="Check DB":
 			open_DB()
